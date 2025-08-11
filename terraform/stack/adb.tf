@@ -39,12 +39,22 @@ resource "null_resource" "execute_adb_sql" {
   ]
 
   provisioner "local-exec" {
-    command = "bash -c 'unzip -o ${path.module}/wallet.zip -d ${path.module}/wallet && export TNS_ADMIN=${path.module}/wallet && cd ${path.module} && (echo \"${var.adb_password}\"; echo \"BEGIN\"; echo \"CTX_DDL.CREATE_PREFERENCE(\\\"world_lexer\\\",\\\"WORLD_LEXER\\\");\"; echo \"END;\"; echo \"/\"; echo \"exit;\") | sqlplus -S ADMIN@${var.adb_name}_high'"
+    command = <<EOT
+      cd ${path.module}
+      unzip -o wallet.zip -d wallet
+      sed -i 's|DIRECTORY="?\+/network/admin" *|DIRECTORY="${path.module}/wallet"|g' wallet/sqlnet.ora
+      export TNS_ADMIN=${path.module}/wallet
+      echo "TNS_ADMIN=$TNS_ADMIN"
+      ls -la $TNS_ADMIN
+      cat $TNS_ADMIN/sqlnet.ora
+      cat $TNS_ADMIN/tnsnames.ora
+      echo -e "BEGIN\\nCTX_DDL.CREATE_PREFERENCE('world_lexer','WORLD_LEXER');\\nEND;\\n/\\nexit;" | sqlplus -S ADMIN/${var.adb_password}@${lower(var.adb_name)}_high
+    EOT
   }
 
   # Clean up files after execution
   provisioner "local-exec" {
     when    = destroy
-    command = "bash -c 'rm -rf ${path.module}/wallet'"
+    command = "rm -rf ${path.module}/wallet"
   }
 }

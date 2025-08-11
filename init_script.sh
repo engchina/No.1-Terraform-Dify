@@ -63,8 +63,6 @@ docker cp /u01/aidify/props/wallet docker-worker-1:/app/api/storage/wallet
 
 # Application setup
 EXTERNAL_IP=$(curl -s -m 10 http://whatismyip.akamai.com/)
-#sed -i "s|localhost:3000|$EXTERNAL_IP:3000|g" ./langfuse/docker-compose.yml
-#chmod +x ./langfuse/main.sh
-#nohup ./langfuse/main.sh &
+echo "Dify is ready to use at http://${EXTERNAL_IP}:8080"
 
 echo "Initialization complete."
