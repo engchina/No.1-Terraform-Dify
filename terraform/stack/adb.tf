@@ -30,3 +30,21 @@ resource "local_file" "generated_autonomous_data_warehouse_wallet_file" {
   content_base64 = oci_database_autonomous_database_wallet.generated_autonomous_data_warehouse_wallet.content
   filename       = "${path.module}/wallet.zip"
 }
+
+# Execute SQL after ADB creation
+resource "null_resource" "execute_adb_sql" {
+  depends_on = [
+    oci_database_autonomous_database.generated_database_autonomous_database,
+    local_file.generated_autonomous_data_warehouse_wallet_file
+  ]
+
+  provisioner "local-exec" {
+    command = "bash -c 'unzip -o ${path.module}/wallet.zip -d ${path.module}/wallet && export TNS_ADMIN=${path.module}/wallet && cd ${path.module} && (echo \"${var.adb_password}\"; echo \"BEGIN\"; echo \"CTX_DDL.CREATE_PREFERENCE(\\\"world_lexer\\\",\\\"WORLD_LEXER\\\");\"; echo \"END;\"; echo \"/\"; echo \"exit;\") | sqlplus -S ADMIN@${var.adb_name}_high'"
+  }
+
+  # Clean up files after execution
+  provisioner "local-exec" {
+    when    = destroy
+    command = "bash -c 'rm -rf ${path.module}/wallet'"
+  }
+}

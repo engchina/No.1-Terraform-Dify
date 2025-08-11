@@ -31,9 +31,9 @@ sed -i "s|EXPOSE_NGINX_PORT=80|EXPOSE_NGINX_PORT=8080|g" .env
 # Configure Oracle ADB as Vector Store
 sed -i "s|VECTOR_STORE=.*|VECTOR_STORE=oracle|g" .env
 sed -i "s|ORACLE_USER=.*|ORACLE_USER=admin|g" .env
-sed -i "s|ORACLE_PASSWORD=.*|ORACLE_PASSWORD=$(ORACLE_PASSWORD)|g" .env
-sed -i "s|ORACLE_DSN=.*|ORACLE_DSN=$(ORACLE_DSN)|g" .env
-sed -i "s|ORACLE_WALLET_PASSWORD=.*|ORACLE_WALLET_PASSWORD=$(ORACLE_WALLET_PASSWORD)|g" .env
+sed -i "s|ORACLE_PASSWORD=.*|ORACLE_PASSWORD=${ORACLE_PASSWORD}|g" .env
+sed -i "s|ORACLE_DSN=.*|ORACLE_DSN=${ORACLE_DSN}|g" .env
+sed -i "s|ORACLE_WALLET_PASSWORD=.*|ORACLE_WALLET_PASSWORD=${ORACLE_WALLET_PASSWORD}|g" .env
 sed -i "s|ORACLE_IS_AUTONOMOUS=.*|ORACLE_IS_AUTONOMOUS=true|g" .env
 
 # Modify docker-compose.yaml to skip Oracle container
