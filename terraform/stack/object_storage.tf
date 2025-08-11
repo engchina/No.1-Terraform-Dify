@@ -17,7 +17,7 @@ resource "oci_objectstorage_bucket" "dify_bucket" {
   name           = var.bucket_name
   namespace      = data.oci_objectstorage_namespace.tenant_namespace.namespace
   # Optional: Disable versioning to make cleanup easier
-  versioning = "Disabled"
+  versioning     = "Disabled"
 }
 
 resource "null_resource" "bucket_cleanup" {
