@@ -62,13 +62,13 @@ sed -i 's|DIRECTORY="?\+/network/admin" *|DIRECTORY="/u01/aidify/props/wallet"|g
 # Copy wallet to Dify container
 docker cp /u01/aidify/props/wallet docker-worker-1:/app/api/storage/wallet
 
+# Temperary Hotfix
+docker cp /u01/aidify/No.1-Terraform-Dify/hotfix/oraclevector.py docker-worker-1:/app/api/core/rag/datasource/vdb/oracle/oraclevector.py
+docker cp /u01/aidify/No.1-Terraform-Dify/hotfix/oraclevector.py docker-api-1:/app/api/core/rag/datasource/vdb/oracle/oraclevector.py
+docker restart docker-worker-1 docker-api-1
+
 # Application setup
 EXTERNAL_IP=$(curl -s -m 10 http://whatismyip.akamai.com/)
 echo "Dify is ready to use at http://${EXTERNAL_IP}:8080"
-
-# Temperary Hotfix
-docker cp ./hotfix/oraclevector.py docker-worker-1:/app/api/core/rag/datasource/vdb/oracle/oraclevector.py
-docker cp ./hotfix/oraclevector.py docker-api-1:/app/api/core/rag/datasource/vdb/oracle/oraclevector.py
-docker restart docker-worker-1 docker-api-1
 
 echo "Initialization complete."

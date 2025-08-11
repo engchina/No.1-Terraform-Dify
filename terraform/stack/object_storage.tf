@@ -22,12 +22,16 @@ resource "null_resource" "bucket_cleanup" {
   triggers = {
     bucket_name = oci_objectstorage_bucket.dify_bucket.name
     namespace   = oci_objectstorage_bucket.dify_bucket.namespace
+    region      = var.home_region
   }
 
   provisioner "local-exec" {
     when    = destroy
-    command = "oci os object bulk-delete --bucket-name ${self.triggers.bucket_name} --namespace ${self.triggers.namespace} --force || true"
+    command = <<EOT
+      echo "Cleaning up bucket objects before deletion..."
+      oci os object bulk-delete --bucket-name ${self.triggers.bucket_name} --namespace ${self.triggers.namespace} --region ${self.triggers.region} --force --all || true
+      oci os object bulk-delete --bucket-name ${self.triggers.bucket_name} --namespace ${self.triggers.namespace} --region ${self.triggers.region} --object-prefix '' --all-object-versions --force || true
+      echo "Bucket cleanup completed"
+    EOT
   }
-
-  depends_on = [oci_objectstorage_bucket.dify_bucket]
 }
