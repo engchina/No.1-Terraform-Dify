@@ -68,8 +68,8 @@ docker cp /u01/aidify/No.1-Terraform-Dify/hotfix/oraclevector.py docker-api-1:/a
 docker restart docker-worker-1 docker-api-1
 
 # Fix nltk download issues
-docker exec -it docker-api-1 python -c "import nltk; nltk.download('punkt'); nltk.download('punkt_tab')"
-docker exec -it docker-worker-1 python -c "import nltk; nltk.download('punkt'); nltk.download('punkt_tab')"
+docker exec docker-api-1 python -c "import nltk; nltk.download('punkt'); nltk.download('punkt_tab')"
+docker exec docker-worker-1 python -c "import nltk; nltk.download('punkt'); nltk.download('punkt_tab')"
 
 # Application setup
 EXTERNAL_IP=$(curl -s -m 10 http://whatismyip.akamai.com/)
