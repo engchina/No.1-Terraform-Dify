@@ -3,11 +3,26 @@ output "bucket_name" {
   value       = oci_objectstorage_bucket.dify_bucket.name
 }
 
-output "autonomous_data_warehouse_admin_password" {
+output "bucket_namespace" {
+  description = "The namespace of the object storage bucket"
+  value       = data.oci_objectstorage_namespace.tenant_namespace.namespace
+}
+
+output "bucket_region" {
+  description = "The region where the object storage bucket is created (selected region)"
+  value       = var.home_region
+}
+
+output "selected_region" {
+  description = "The selected region for object storage"
+  value       = var.home_region
+}
+
+output "adb_password" {
     value = var.adb_password
 }
 
-output "autonomous_data_warehouse_high_connection_string" {
+output "adb_connection_string" {
   value = lookup(
     oci_database_autonomous_database.generated_database_autonomous_database.connection_strings[0].all_connection_strings,
     "HIGH",

@@ -11,27 +11,35 @@ packages:
   - build-essential
   - ca-certificates
 write_files:
-  - path: "/u01/aidify/props/db.env"
+  - path: "/u01/aidify/props/bucket_name.txt"
     permissions: "0644"
-    encoding: "gzip+base64"
     content: |
-      ${oci_database_autonomous_database_connection_string}
-  - path: "/u01/aidify/props/compartment_id.txt"
+      ${bucket_name}
+  - path: "/u01/aidify/props/bucket_namespace.txt"
     permissions: "0644"
-    content: ${output_compartment_ocid}
+    content: |
+      ${bucket_namespace}
+  - path: "/u01/aidify/props/bucket_region.txt"
+    permissions: "0644"
+    content: |
+      ${bucket_region}
+  - path: "/u01/aidify/props/oci_access_key.txt"
+    permissions: "0644"
+    content: |
+      ${oci_access_key}
+  - path: "/u01/aidify/props/oci_secret_key.txt"
+    permissions: "0644"
+    content: |
+      ${oci_secret_key}
   - path: "/u01/aidify/props/wallet.zip"
     permissions: "0644"
     encoding: base64
     content: |
       ${oci_database_autonomous_database_wallet_content}
-  - path: "/u01/aidify/props/object_storage.env"
-    permissions: "0644"
-    content: |
-      BUCKET_NAME=${bucket_name}
-  - path: "/u01/aidify/props/db_password.txt"
+  - path: "/u01/aidify/props/adb_password.txt"
     permissions: "0644"
     content: ${oci_database_autonomous_database_password}
-  - path: "/u01/aidify/props/db_dsn.txt"
+  - path: "/u01/aidify/props/adb_dsn.txt"
     permissions: "0644"
     content: ${oci_database_autonomous_database_dsn}
   - path: "/u01/aidify/props/wallet_password.txt"

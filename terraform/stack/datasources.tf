@@ -8,6 +8,10 @@ data "template_file" "cloud_init_file" {
     oci_database_autonomous_database_dsn = "${lower(var.adb_name)}_high"
     output_compartment_ocid = var.compartment_ocid
     bucket_name = var.bucket_name
+    bucket_namespace = data.oci_objectstorage_namespace.tenant_namespace.namespace
+    bucket_region = var.home_region
+    oci_access_key = var.oci_access_key
+    oci_secret_key = var.oci_secret_key
   }
 }
 

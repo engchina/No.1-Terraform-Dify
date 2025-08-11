@@ -2,6 +2,10 @@ variable "availability_domain" {
   default = "bxtG:AP-TOKYO-1-AD-1"
 }
 
+variable "home_region" {
+  default = "ap-osaka-1"
+}
+
 variable "compartment_ocid" {
   default = ""
 }
@@ -59,5 +63,13 @@ variable "bucket_name" {
 }
 
 variable "bucket_namespace" {
+  default = ""
+}
+
+variable "oci_access_key" {
+  default = ""
+}
+
+variable "oci_secret_key" {
   default = ""
 }

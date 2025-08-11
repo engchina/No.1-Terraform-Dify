@@ -1,8 +1,18 @@
+# Provider for home region
+provider "oci" {
+  alias  = "home_region"
+  region = var.home_region
+}
+
+# Get namespace in home region
 data "oci_objectstorage_namespace" "tenant_namespace" {
+  provider       = oci.home_region
   compartment_id = var.compartment_ocid
 }
 
+# Create bucket in home region
 resource "oci_objectstorage_bucket" "dify_bucket" {
+  provider       = oci.home_region
   compartment_id = var.compartment_ocid
   name           = var.bucket_name
   namespace      = data.oci_objectstorage_namespace.tenant_namespace.namespace

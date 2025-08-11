@@ -29,7 +29,10 @@ variableGroups:
       - vcn_ai_vcn_id
       - subnet_ai_subnet_id
       - ssh_authorized_keys
+      - home_region
       - bucket_name
+      - oci_access_key
+      - oci_secret_key
 
 variables:
   region:
@@ -111,12 +114,76 @@ variables:
     required: true
     visible: true
 
+  home_region:
+    type: enum
+    required: true
+    visible: true
+    title: "Home Region for Object Storage"
+    description: "Select the region where Object Storage bucket will be created"
+    enum:
+      - "ap-sydney-1"
+      - "ap-melbourne-1"
+      - "sa-saopaulo-1"
+      - "sa-vinhedo-1"
+      - "ca-montreal-1"
+      - "ca-toronto-1"
+      - "sa-santiago-1"
+      - "sa-valparaiso-1"
+      - "sa-bogota-1"
+      - "eu-paris-1"
+      - "eu-marseille-1"
+      - "eu-frankfurt-1"
+      - "ap-hyderabad-1"
+      - "ap-mumbai-1"
+      - "ap-batam-1"
+      - "il-jerusalem-1"
+      - "eu-milan-1"
+      - "ap-osaka-1"
+      - "ap-tokyo-1"
+      - "mx-queretaro-1"
+      - "mx-monterrey-1"
+      - "eu-amsterdam-1"
+      - "me-riyadh-1"
+      - "me-jeddah-1"
+      - "eu-jovanovac-1"
+      - "ap-singapore-1"
+      - "ap-singapore-2"
+      - "af-johannesburg-1"
+      - "ap-seoul-1"
+      - "ap-chuncheon-1"
+      - "eu-madrid-1"
+      - "eu-stockholm-1"
+      - "eu-zurich-1"
+      - "me-abudhabi-1"
+      - "me-dubai-1"
+      - "uk-london-1"
+      - "uk-cardiff-1"
+      - "us-ashburn-1"
+      - "us-chicago-1"
+      - "us-phoenix-1"
+      - "us-sanjose-1"
+    default: "ap-osaka-1"
+
   bucket_name:
     type: string
     required: true
     visible: true
     title: "Object Storage Bucket Name"
     description: "Name of the bucket to be created for Dify"
+
+  oci_access_key:
+    type: string
+    required: true
+    visible: true
+    title: "OCI Access Key"
+    description: "OCI Object Storage Access Key for S3 compatibility"
+
+  oci_secret_key:
+    type: string
+    required: true
+    visible: true
+    title: "OCI Secret Key"
+    description: "OCI Object Storage Secret Key for S3 compatibility"
 
   bucket_namespace:
     type: string
@@ -162,7 +229,22 @@ outputs:
     type: copyableString
     visible: true
     value: ${oci_objectstorage_bucket.dify_bucket.name}
-  autonomous_data_warehouse_high_connection_string:
+  bucket_namespace:
+    title: "Object Storage Bucket Namespace"
+    displayText: "Object Storage Bucket Namespace"
+    type: copyableString
+    visible: true
+  bucket_region:
+    title: "Object Storage Bucket Region (Selected Region)"
+    displayText: "Object Storage Bucket Region (Selected Region)"
+    type: copyableString
+    visible: true
+  selected_region:
+    title: "Selected Region for Object Storage"
+    displayText: "Selected Region for Object Storage"
+    type: copyableString
+    visible: true
+  adb_connection_string:
     title: "Autonomous Data Warehouse High Connection String"
     displayText: "Autonomous Data Warehouse High Connection String"
     type: copyableString

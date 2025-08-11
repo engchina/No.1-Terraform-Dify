@@ -6,15 +6,6 @@ cd /u01/aidify
 # Move to source directory
 cd /u01/aidify/No.1-Terraform-Dify
 
-# Update environment variables
-DB_CONNECTION_STRING=$(cat /u01/aidify/props/db.env)
-COMPARTMENT_ID=$(cat /u01/aidify/props/compartment_id.txt)
-cp .env.example .env
-DB_CONNECTION_STRING=$(cat /u01/aidify/props/db.env)
-sed -i "s|ORACLE_23AI_CONNECTION_STRING=TODO|ORACLE_23AI_CONNECTION_STRING=$DB_CONNECTION_STRING|g" .env
-COMPARTMENT_ID=$(cat /u01/aidify/props/compartment_id.txt)
-sed -i "s|OCI_COMPARTMENT_OCID=TODO|OCI_COMPARTMENT_OCID=$COMPARTMENT_ID|g" .env
-
 # Docker setup
 chmod +x ./install_docker.sh
 bash ./install_docker.sh
@@ -23,30 +14,45 @@ systemctl start docker
 # Clone and install Dify
 git clone -b 1.7.1 https://github.com/langgenius/dify.git
 cd dify/docker
+
+# Get OCI configuration from Terraform outputs
+ORACLE_PASSWORD=$(cat /u01/aidify/props/adb_password.txt)
+ORACLE_DSN=$(cat /u01/aidify/props/adb_dsn.txt)
+ORACLE_WALLET_PASSWORD=$(cat /u01/aidify/props/wallet_password.txt)
+BUCKET_NAMESPACE=$(cat /u01/aidify/props/bucket_namespace.txt)
+BUCKET_NAME=$(cat /u01/aidify/props/bucket_name.txt)
+BUCKET_REGION=$(cat /u01/aidify/props/bucket_region.txt)
+OCI_ACCESS_KEY=$(cat /u01/aidify/props/oci_access_key.txt)
+OCI_SECRET_KEY=$(cat /u01/aidify/props/oci_secret_key.txt)
+
 cp .env.example .env
 sed -i "s|EXPOSE_NGINX_PORT=80|EXPOSE_NGINX_PORT=8080|g" .env
 
 # Configure Oracle ADB as Vector Store
-sed -i "s|VECTOR_STORE=weaviate|VECTOR_STORE=oracle|g" .env
-sed -i "s|ORACLE_USER=dify|ORACLE_USER=admin|g" .env
-sed -i "s|ORACLE_PASSWORD=dify|ORACLE_PASSWORD=$(cat /u01/aidify/props/db_password.txt)|g" .env
-sed -i "s|ORACLE_DSN=oracle:1521/FREEPDB1|ORACLE_DSN=$(cat /u01/aidify/props/db_dsn.txt)|g" .env
-sed -i "s|ORACLE_WALLET_PASSWORD=dify|ORACLE_WALLET_PASSWORD=$(cat /u01/aidify/props/wallet_password.txt)|g" .env
-sed -i "s|ORACLE_IS_AUTONOMOUS=false|ORACLE_IS_AUTONOMOUS=true|g" .env
+sed -i "s|VECTOR_STORE=.*|VECTOR_STORE=oracle|g" .env
+sed -i "s|ORACLE_USER=.*|ORACLE_USER=admin|g" .env
+sed -i "s|ORACLE_PASSWORD=.*|ORACLE_PASSWORD=$(ORACLE_PASSWORD)|g" .env
+sed -i "s|ORACLE_DSN=.*|ORACLE_DSN=$(ORACLE_DSN)|g" .env
+sed -i "s|ORACLE_WALLET_PASSWORD=.*|ORACLE_WALLET_PASSWORD=$(ORACLE_WALLET_PASSWORD)|g" .env
+sed -i "s|ORACLE_IS_AUTONOMOUS=.*|ORACLE_IS_AUTONOMOUS=true|g" .env
 
 # Modify docker-compose.yaml to skip Oracle container
 sed -i "s|      - oracle|      - oracle-skip|g" docker-compose.yaml
 
 # Configure OCI Object Storage
-#sed -i "s|# STORAGE_TYPE=opendal|STORAGE_TYPE=oci-storage|g" .env
-#echo "" >> .env
-#echo "# Oracle Storage Configuration" >> .env
-#echo "#" >> .env
-#echo "OCI_ENDPOINT=https://<OBJECT_STORAGE_NAMESPACE>.compat.objectstorage.<OCI_REGION>.oraclecloud.com" >> .env
-#echo "OCI_BUCKET_NAME=<BUCKET_NAME>" >> .env
-#echo "OCI_ACCESS_KEY=<ACCESS_KEY>" >> .env
-#echo "OCI_SECRET_KEY=<SECRET_KEY>" >> .env
-#echo "OCI_REGION=<OCI_REGION>" >> .env
+sed -i "s|STORAGE_TYPE=opendal|STORAGE_TYPE=oci-storage|g" .env
+
+# Configure OCI Object Storage environment variables
+OCI_ENDPOINT=https://${BUCKET_NAMESPACE}.compat.objectstorage.${BUCKET_REGION}.oraclecloud.com
+OCI_BUCKET_NAME=${BUCKET_NAME}
+OCI_REGION=${BUCKET_REGION}
+
+# Apply OCI configuration to .env file
+sed -i "s|OCI_ENDPOINT=.*|OCI_ENDPOINT=${OCI_ENDPOINT}|g" .env
+sed -i "s|OCI_BUCKET_NAME=.*|OCI_BUCKET_NAME=${OCI_BUCKET_NAME}|g" .env
+sed -i "s|OCI_ACCESS_KEY=.*|OCI_ACCESS_KEY=${OCI_ACCESS_KEY}|g" .env
+sed -i "s|OCI_SECRET_KEY=.*|OCI_SECRET_KEY=${OCI_SECRET_KEY}|g" .env
+sed -i "s|OCI_REGION=.*|OCI_REGION=${OCI_REGION}|g" .env
 
 docker compose up -d
 
