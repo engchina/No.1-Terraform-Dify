@@ -3,4 +3,4 @@ Infrastructure as Code to deploy the open-source LLM platform Dify on Oracle Clo
 
 ## Deploy
 
-  [![Deploy to Oracle Cloud](https://oci-resourcemanager-plugin.plugins.oci.oraclecloud.com/latest/deploy-to-oracle-cloud.svg)](https://cloud.oracle.com/resourcemanager/stacks/create?region=ap-osaka-1&zipUrl=https://github.com/engchina/No.1-Terraform-Dify/releases/download/v1.0.0/v1.0.0.zip)
+  [![Deploy to Oracle Cloud](https://oci-resourcemanager-plugin.plugins.oci.oraclecloud.com/latest/deploy-to-oracle-cloud.svg)](https://cloud.oracle.com/resourcemanager/stacks/create?region=ap-osaka-1&zipUrl=https://github.com/engchina/No.1-Terraform-Dify/releases/download/v1.7.2/v1.7.2.zip)
