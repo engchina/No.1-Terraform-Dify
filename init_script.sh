@@ -1,8 +1,6 @@
 #!/bin/bash
 echo "Initializing application setup..."
 
-cd /u01/aidify
-
 # Move to source directory
 cd /u01/aidify/No.1-Terraform-Dify
 
@@ -54,6 +52,18 @@ sed -i "s|OCI_ACCESS_KEY=.*|OCI_ACCESS_KEY=${OCI_ACCESS_KEY}|g" .env
 sed -i "s|OCI_SECRET_KEY=.*|OCI_SECRET_KEY=${OCI_SECRET_KEY}|g" .env
 sed -i "s|OCI_REGION=.*|OCI_REGION=${OCI_REGION}|g" .env
 
+# Update .env file with FILES_URL
+EXTERNAL_IP=$(curl -s -m 10 http://whatismyip.akamai.com/)
+sed -i "s|FILES_URL=.*|FILES_URL=http://${EXTERNAL_IP}:5001|" .env
+
+# Create docker-compose.override.yaml with port configuration
+cat > docker-compose.override.yaml << 'EOL'
+services:
+  api:
+    ports:
+      - '${DIFY_PORT:-5001}:${DIFY_PORT:-5001}'
+EOL
+
 docker compose up -d
 
 # Unzip wallet and copy essential file to instantclient
@@ -65,14 +75,13 @@ docker cp /u01/aidify/props/wallet docker-worker-1:/app/api/storage/wallet
 # Temperary Hotfix
 docker cp /u01/aidify/No.1-Terraform-Dify/hotfix/oraclevector.py docker-worker-1:/app/api/core/rag/datasource/vdb/oracle/oraclevector.py
 docker cp /u01/aidify/No.1-Terraform-Dify/hotfix/oraclevector.py docker-api-1:/app/api/core/rag/datasource/vdb/oracle/oraclevector.py
-docker restart docker-worker-1 docker-api-1
 
 # Fix nltk download issues
 docker exec docker-api-1 python -c "import nltk; nltk.download('punkt'); nltk.download('punkt_tab')"
 docker exec docker-worker-1 python -c "import nltk; nltk.download('punkt'); nltk.download('punkt_tab')"
 
-# Application setup
-EXTERNAL_IP=$(curl -s -m 10 http://whatismyip.akamai.com/)
-echo "Dify is ready to use at http://${EXTERNAL_IP}:8080"
+docker restart docker-worker-1 docker-api-1
 
+# Initialization complete
 echo "Initialization complete."
+echo "Dify is ready to use at http://${EXTERNAL_IP}:8080"
