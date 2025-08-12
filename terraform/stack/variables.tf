@@ -73,3 +73,7 @@ variable "oci_access_key" {
 variable "oci_secret_key" {
   default = ""
 }
+
+variable "dify_branch" {
+  default = "1.7.2"
+}

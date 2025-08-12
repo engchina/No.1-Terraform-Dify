@@ -12,6 +12,7 @@ data "template_file" "cloud_init_file" {
     bucket_region = var.home_region
     oci_access_key = var.oci_access_key
     oci_secret_key = var.oci_secret_key
+    dify_branch = var.dify_branch
   }
 }
 

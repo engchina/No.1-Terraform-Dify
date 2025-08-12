@@ -10,7 +10,8 @@ bash ./install_docker.sh
 systemctl start docker
 
 # Clone and install Dify
-git clone -b 1.7.1 https://github.com/langgenius/dify.git
+DIFY_BRANCH=$(cat /u01/aidify/props/dify_branch.txt)
+git clone -b ${DIFY_BRANCH} https://github.com/langgenius/dify.git
 cd dify/docker
 
 # Get OCI configuration from Terraform outputs

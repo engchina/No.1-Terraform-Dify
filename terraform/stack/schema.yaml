@@ -33,6 +33,7 @@ variableGroups:
       - bucket_name
       - oci_access_key
       - oci_secret_key
+      - dify_branch
 
 variables:
   region:
@@ -221,6 +222,13 @@ variables:
     visible: false
   instance_flex_shape_ocpus:
     visible: false
+  dify_branch:
+    type: string
+    required: false
+    visible: true
+    title: "Dify Branch/Tag"
+    description: "Branch or tag name to use when cloning the Dify repository"
+    default: "1.7.2"
 
 outputs:
   bucket_name:
