@@ -49,7 +49,7 @@ write_files:
       ${dify_branch}
 runcmd:
   - echo "Running aidify init..."
-  - iptables -I INPUT 6 -m state --state NEW -p tcp --dport 80 -j ACCEPT
+  - iptables -I INPUT 6 -m state --state NEW -p tcp --dport 8080 -j ACCEPT
   - iptables -I INPUT 7 -m state --state NEW -p tcp --dport 5001 -j ACCEPT
   - netfilter-persistent save
   - echo "Downloading and running init script..."
