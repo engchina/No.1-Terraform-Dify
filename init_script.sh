@@ -55,7 +55,12 @@ sed -i "s|OCI_REGION=.*|OCI_REGION=${OCI_REGION}|g" .env
 
 # Update .env file with FILES_URL
 EXTERNAL_IP=$(curl -s -m 10 http://whatismyip.akamai.com/)
-sed -i "s|FILES_URL=.*|FILES_URL=http://${EXTERNAL_IP}:5001|" .env
+sed -i "s|^CONSOLE_API_URL=.*|CONSOLE_API_URL=http://${EXTERNAL_IP}:8080|" .env
+sed -i "s|^CONSOLE_WEB_URL=.*|CONSOLE_WEB_URL=http://${EXTERNAL_IP}:8080|" .env
+sed -i "s|^SERVICE_API_URL=.*|SERVICE_API_URL=http://${EXTERNAL_IP}:8080|" .env
+sed -i "s|^APP_API_URL=.*|APP_API_URL=http://${EXTERNAL_IP}:8080|" .env
+sed -i "s|^APP_WEB_URL=.*|APP_WEB_URL=http://${EXTERNAL_IP}:8080|" .env
+sed -i "s|^FILES_URL=.*|FILES_URL=http://${EXTERNAL_IP}:5001|" .env
 
 # Create docker-compose.override.yaml with port configuration
 cat > docker-compose.override.yaml << 'EOL'
